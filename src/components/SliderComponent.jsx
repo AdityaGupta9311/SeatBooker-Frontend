@@ -1,61 +1,78 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import axios from "axios";
 
-// Sample images for the slider
-const images = [
-  "https://lumiere-a.akamaihd.net/v1/images/p_disneymovies_mufasa_poster_v1_eb23f7a5.jpeg",
-];
+const SliderComponent = () => {
+  const [movies, setMovies] = useState([]);
+  const sliderRef = useRef(null);
 
-const Slider = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  useEffect(() => {
+    axios.get("http://localhost:8080/auth/getallmovies")
+      .then((res) => {
+        console.log("Fetched movies:", res.data);
+        setMovies(res.data);
+      })
+      .catch((err) => console.error("Error fetching movies:", err));
+  }, []);
 
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  const onPrevClick = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: -250, behavior: "smooth" });
+    }
   };
 
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+  const onNextClick = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: 250, behavior: "smooth" });
+    }
   };
 
   return (
-    <div className="relative w-full mx-auto max-w-7xl">
-      {/* Image Display */}
-      <motion.div
-        key={currentIndex}
-        className="overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <img
-          src={images[currentIndex]}
-          alt={`Slide ${currentIndex + 1}`}
-          className="object-cover w-full h-auto rounded-lg"
-        />
-      </motion.div>
-
-      {/* Navigation Buttons */}
-      <div className="absolute left-0 p-4 transform -translate-y-1/2 top-1/2">
-        <button
-          onClick={prevSlide}
-          className="p-2 text-white transition duration-300 bg-gray-900 rounded-full opacity-75 hover:opacity-100"
-        >
-          &#60;
-        </button>
+    <div className="px-4 py-8 mx-auto overflow-hidden max-w-7xl">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">Recommended Movies</h2>
+        <div className="flex space-x-2">
+          <button className="p-2 bg-gray-200 rounded-full hover:bg-gray-300" onClick={onPrevClick}>
+            ◀
+          </button>
+          <button className="p-2 bg-gray-200 rounded-full hover:bg-gray-300" onClick={onNextClick}>
+            ▶
+          </button>
+        </div>
       </div>
-      <div className="absolute right-0 p-4 transform -translate-y-1/2 top-1/2">
-        <button
-          onClick={nextSlide}
-          className="p-2 text-white transition duration-300 bg-gray-900 rounded-full opacity-75 hover:opacity-100"
+
+      {/* Main Slider Wrapper */}
+      <div className="relative overflow-hidden">
+        <div
+          ref={sliderRef}
+          className="flex space-x-4 overflow-x-auto scrollbar-hidden snap-x snap-mandatory"
         >
-          &#62;
-        </button>
+          {movies.length > 0 ? (
+            movies.map((movie) => (
+              <div
+                className="flex-none w-[220px] md:w-[240px] snap-center"
+                key={movie.id}
+              >
+                <div className="overflow-hidden transition-shadow bg-white rounded-lg shadow-lg hover:shadow-xl">
+                  <img
+                    src={movie.poster || "https://via.placeholder.com/240x360"}
+                    alt={movie.title}
+                    className="object-cover w-full h-[360px]"
+                  />
+                  <div className="p-3">
+                    <h3 className="text-lg font-bold truncate">{movie.title}</h3>
+                    <p className="text-sm text-gray-600">{movie.genre.join(", ")}</p>
+                    <p className="text-sm text-gray-500">⭐ {movie.rating}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No movies found</p>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default Slider;
+export default SliderComponent;

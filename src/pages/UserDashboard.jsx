@@ -7,9 +7,9 @@ const UserDashboard = () => {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="container pt-24 mx-auto">
-        <SliderComponent category="Action" />
-        <SliderComponent category="Comedy" />
-        <SliderComponent category="Drama" />
+        <SliderComponent />
+        {/* <SliderComponent category="Comedy" />
+        <SliderComponent category="Drama" /> */}
       </div>
       <Footer />
     </div>
