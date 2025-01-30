@@ -88,7 +88,7 @@ function LoginTheater() {
         />
         <p className="text-center text-gray-600">
           Don't have an account?{" "}
-          <Link to="/register" className="text-green-500 hover:underline">
+          <Link to="/theater/register" className="text-green-500 hover:underline">
             Register
           </Link>
         </p>
