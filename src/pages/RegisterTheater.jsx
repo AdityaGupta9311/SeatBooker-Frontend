@@ -21,11 +21,11 @@ function RegisterTheater() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/theater", // Your backend URL
+        "http://localhost:8080/auth/theater", // Your backend URL
         theater
       );
       toast.success("Theater successfully registered!");
-      navigate("/login"); // Redirect to login after successful registration
+      navigate("/theater/login"); // Redirect to login after successful registration
     } catch (err) {
       const errorMessage = err.response?.data || "An error occurred. Please try again."; // Get error message from backend
       toast.error(errorMessage); // Show error message from backend
@@ -80,7 +80,7 @@ function RegisterTheater() {
           <motion.input
             type="text"
             name="location"
-            placeholder="Location"
+            placeholder="Full Address"
             value={theater.location}
             onChange={handleChange}
             className="w-full px-4 py-2 transition border border-t-0 border-l-0 border-r-0 outline-none"

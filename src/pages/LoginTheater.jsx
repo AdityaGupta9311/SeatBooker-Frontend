@@ -21,7 +21,7 @@ function LoginTheater() {
 
     try {
         const response = await axios.post(
-            "http://localhost:8080/api/logintheater", // Your backend URL
+            "http://localhost:8080/auth/logintheater", // Your backend URL
             theater
         );
         const token = response.data.token; // Access token from response
