@@ -23,7 +23,7 @@ function Login() {
       const response = await axios.post("http://localhost:8080/auth/login", credentials);
       localStorage.setItem("token", response.data.token); // Store JWT Token
       toast.success("Login successful!");
-      navigate("/dashboard"); // Redirect after login (change route as needed)
+      navigate("/"); // Redirect after login (change route as needed)
     } catch (err) {
       toast.error("Invalid email or password!"); // Show error message
     }
