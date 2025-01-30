@@ -5,7 +5,15 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 
 function RegisterTheater() {
-  const [theater, setTheater] = useState({ theater_name: "", email: "", password: "", location: "", total_screens: "", contact: "" });
+  const [theater, setTheater] = useState({
+    theater_name: "",
+    email: "",
+    password: "",
+    location: "",
+    city: "",
+    total_screens: "",
+    contact: "",
+  });
   const [error, setError] = useState(""); // Error message state
   const navigate = useNavigate();
 
@@ -27,7 +35,8 @@ function RegisterTheater() {
       toast.success("Theater successfully registered!");
       navigate("/theater/login"); // Redirect to login after successful registration
     } catch (err) {
-      const errorMessage = err.response?.data || "An error occurred. Please try again."; // Get error message from backend
+      const errorMessage =
+        err.response?.data || "An error occurred. Please try again."; // Get error message from backend
       toast.error(errorMessage); // Show error message from backend
     }
   };
@@ -45,7 +54,9 @@ function RegisterTheater() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
       >
-        <h2 className="text-3xl font-extrabold text-center text-gray-800">Register Theater</h2>
+        <h2 className="text-3xl font-extrabold text-center text-gray-800">
+          Register Theater
+        </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <motion.input
             type="text"
@@ -82,6 +93,16 @@ function RegisterTheater() {
             name="location"
             placeholder="Full Address"
             value={theater.location}
+            onChange={handleChange}
+            className="w-full px-4 py-2 transition border border-t-0 border-l-0 border-r-0 outline-none"
+            whileFocus={{ scale: 1.05 }}
+            required
+          />
+          <motion.input
+            type="text"
+            name="city"
+            placeholder="City"
+            value={theater.city}
             onChange={handleChange}
             className="w-full px-4 py-2 transition border border-t-0 border-l-0 border-r-0 outline-none"
             whileFocus={{ scale: 1.05 }}
