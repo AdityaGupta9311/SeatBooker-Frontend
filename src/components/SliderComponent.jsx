@@ -33,7 +33,7 @@ const SliderComponent = () => {
   const handleMovieClick = async (movieId) => {
     const token = localStorage.getItem("token"); // Ensure you retrieve the token correctly
     try {
-        const response = await axios.get(`http://localhost:8080/shows/movie/${movieId}`, {
+        const response = await axios.get(`http://localhost:8080/shows/movie/${userId}`, {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",

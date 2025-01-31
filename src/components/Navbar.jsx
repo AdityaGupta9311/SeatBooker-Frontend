@@ -60,7 +60,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {isLoggedIn ? (
               <div className="flex items-center space-x-3">
-                <Link to="/profile">
+                <Link to="/user/profile">
                   <FaUserCircle className="text-3xl cursor-pointer hover:text-gray-300" />
                 </Link>
                 <button

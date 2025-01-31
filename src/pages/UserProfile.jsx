@@ -1,74 +1,44 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const UserProfile = () => {
+function UserProfile() {
   const [user, setUser] = useState(null);
-  const [bookings, setBookings] = useState([]);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch user details from backend
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("No token found. Redirecting...");
+      navigate("/login")
+      return;
+    }
+
     axios
       .get("http://localhost:8080/user/profile", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Send JWT token
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {
-        setUser(res.data);
-      })
-      .catch((err) => console.error("Error fetching user data:", err));
+      .then((res) => setUser(res.data))
+      .catch((err) => {
+        console.error("Profile Error:", err);
+        setError("Error fetching profile. Please log in again.");
+        localStorage.removeItem("token");
+        navigate("/login");
+      });
+  }, [navigate]);
 
-    // Fetch user booking history
-    axios
-      .get("http://localhost:8080/user/bookings", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Send JWT token
-        },
-      })
-      .then((res) => {
-        setBookings(res.data);
-      })
-      .catch((err) => console.error("Error fetching booking history:", err));
-  }, []);
-
-  if (!user) return <p className="mt-10 text-center">Loading profile...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!user) return <p>Loading profile...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar />
-      <div className="container pt-24 pb-12 mx-auto">
-        {/* User Details Section */}
-        <div className="max-w-3xl p-6 mx-auto text-center bg-white rounded-lg shadow-lg">
-          <h2 className="text-3xl font-bold text-gray-800">User Profile</h2>
-          <p className="mt-2 text-gray-600">{user.name}</p>
-          <p className="mt-1 text-gray-600">{user.email}</p>
-          <p className="mt-1 text-gray-500">Joined on: {new Date(user.created_at).toDateString()}</p>
-        </div>
-
-        {/* Booking History Section */}
-        <div className="max-w-4xl mx-auto mt-10">
-          <h2 className="mb-4 text-2xl font-semibold text-gray-800">Booking History</h2>
-          {bookings.length === 0 ? (
-            <p className="text-center text-gray-600">No bookings found.</p>
-          ) : (
-            <div className="p-6 bg-white rounded-lg shadow-lg">
-              {bookings.map((booking, index) => (
-                <div key={index} className="py-4 border-b">
-                  <p className="text-lg font-bold">{booking.movieName}</p>
-                  <p className="text-gray-600">Theater: {booking.theaterName}</p>
-                  <p className="text-gray-600">Date: {new Date(booking.date).toDateString()}</p>
-                  <p className="text-gray-600">Seats: {booking.seats.join(", ")}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-      <Footer />
+    <div className="p-6">
+      <h2 className="text-2xl font-bold">Welcome, {user.name}!</h2>
+      <p>Email: {user.email}</p>
+      <p>ID: {user.id}</p>
     </div>
   );
-};
+}
 
 export default UserProfile;
