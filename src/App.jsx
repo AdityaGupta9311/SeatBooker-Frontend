@@ -7,6 +7,7 @@ import RegisterTheater from './pages/RegisterTheater';
 import UserDashboard from './pages/UserDashboard';
 import UserProfile from './pages/UserProfile';
 import AdminDashboard from './pages/AdminDashboard';
+import MovieBooking from './pages/MovieBooking';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<UserDashboard />} />
         <Route path="/user/profile" element={<UserProfile />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/movie/:movieId" element={<MovieBooking />} />
       </Routes>
     </Router>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,6 +43,7 @@ const Navbar = () => {
             </motion.div>
           </div>
           <div className="flex items-center space-x-4">
+            <Link to="/login">
             <motion.button
               className="hover:text-red-500"
               whileHover={{ scale: 1.1 }}
@@ -50,7 +52,9 @@ const Navbar = () => {
             >
               Sign In
             </motion.button>
-            <motion.button
+            </Link>
+         <Link to="/register">
+         <motion.button
               className="px-4 py-2 bg-red-500 rounded-md hover:bg-red-600"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -58,6 +62,7 @@ const Navbar = () => {
             >
               Register
             </motion.button>
+         </Link>
           </div>
         </div>
       </div>
