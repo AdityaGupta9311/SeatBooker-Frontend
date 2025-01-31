@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
@@ -6,8 +6,16 @@ import axios from "axios";
 
 function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const [error, setError] = useState(""); // Error message state
+  const [error, setError] = useState(""); 
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/"); 
+    }
+  }, [navigate]);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -17,15 +25,20 @@ function Login() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError(""); 
 
     try {
       const response = await axios.post("http://localhost:8080/auth/login", credentials);
       localStorage.setItem("token", response.data.token); // Store JWT Token
       toast.success("Login successful!");
-      navigate("/"); // Redirect after login (change route as needed)
+      navigate("/"); 
     } catch (err) {
-      toast.error("Invalid email or password!"); // Show error message
+      if (err.response && err.response.data) {
+        setError(err.response.data.message);
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Something went wrong. Please try again!");
+      }
     }
   };
 
@@ -44,7 +57,7 @@ function Login() {
       >
         <h2 className="text-3xl font-extrabold text-center text-gray-800">Login</h2>
 
-        {error && <p className="text-center text-red-500">{error}</p>} {/* Show error message */}
+        {error && <p className="text-center text-red-500">{error}</p>} 
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <motion.input

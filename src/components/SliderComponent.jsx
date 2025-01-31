@@ -1,15 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom"; // Import navigation
+import { useNavigate } from "react-router-dom";
 
 const SliderComponent = () => {
   const [movies, setMovies] = useState([]);
   const sliderRef = useRef(null);
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:8080/auth/getallmovies")
+    axios
+      .get("http://localhost:8080/auth/getallmovies")
       .then((res) => {
         console.log("Fetched movies:", res.data);
         setMovies(res.data);
@@ -28,6 +29,21 @@ const SliderComponent = () => {
       sliderRef.current.scrollBy({ left: 250, behavior: "smooth" });
     }
   };
+
+  const handleMovieClick = async (movieId) => {
+    const token = localStorage.getItem("token"); // Ensure you retrieve the token correctly
+    try {
+        const response = await axios.get(`http://localhost:8080/shows/movie/${movieId}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        console.log("Show details:", response.data);
+    } catch (error) {
+        console.error("Error checking show availability:", error);
+    }
+};
 
   return (
     <div className="px-4 py-8 mx-auto overflow-hidden max-w-7xl">
@@ -50,7 +66,7 @@ const SliderComponent = () => {
           {movies.length > 0 ? (
             movies.map((movie) => (
               <motion.div className="flex-none w-[220px] md:w-[240px] snap-center" key={movie.id} transition={{ duration: 0.3 }}
-                onClick={() => navigate(`/movie/${movie.id}`)} // Navigate to MovieBooking on click
+                onClick={() => handleMovieClick(movie.id)} // Navigate only if shows exist
               >
                 <div className="overflow-hidden transition-shadow bg-white rounded-lg shadow-lg h-[420px] cursor-pointer">
                   <motion.img src={movie.poster || "https://via.placeholder.com/240x360"} alt={movie.title}
